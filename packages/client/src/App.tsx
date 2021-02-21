@@ -1,14 +1,16 @@
 import React from 'react';
+import { Router } from 'react-router-dom';
+import Routes from './shared/routes/Routes';
+import { createBrowserHistory } from 'history';
 
-import { Button } from '../node_modules/antd/lib/index';
-import 'antd/dist/antd.css';
 
-export default function App()
-{
+
+const browserHistory = createBrowserHistory();
+
+export default function App() {
     return (
-        <>
-        <Button type="primary">Button</Button>
-        <h1 className="test">Hello, worldd!</h1>
-        </>
+        <Router history={browserHistory}>
+          <Routes />
+        </Router>
     )
 }
