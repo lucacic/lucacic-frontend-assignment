@@ -1,12 +1,13 @@
 import React from 'react';
-import { Switch } from "react-router-dom";
+import { Switch,Redirect } from "react-router-dom";
 
 // Layout and Route Component
 import LayoutMain from '../layouts/LayoutMain';
 import RouteWithLayout from '../components/RouteWithLayout/RouteWithLayout';
 
 // Content Component
-import MyComponent from '../components/MyComponent';
+import Dashboard from '../components/Dashboard';
+import PokemonList from '../components/PokemonList/PokemonList';
 
 
 
@@ -15,17 +16,18 @@ const Routes = () => {
   return (
     <Switch>
       <RouteWithLayout
-        component={MyComponent}
+        component={PokemonList}
+        exact
+        layout={LayoutMain}
+        path="/pokemons"
+      />
+      <RouteWithLayout
+        component={PokemonList}
         exact
         layout={LayoutMain}
         path="/"
       />
-      <RouteWithLayout
-        component={MyComponent}
-        exact
-        layout={LayoutMain}
-        path="/test"
-      />
+      <Redirect to="/" />
     </Switch>
 
   )

@@ -25,14 +25,14 @@ const LayoutMain : FunctionComponent = ({ children }) => {
                 </Header>
                 <Layout>
                     <Sider width={200}>
-                        <Menu mode="inline" defaultSelectedKeys={['test']} style={{ height: '100%', borderRight: 0 }}>
-                            <Item key="test">
-                                <Link to="/test"></Link>
-                                <span>user</span>
-                            </Item>
-                            <Item key="home">
+                        <Menu mode="inline" defaultSelectedKeys={['dashboard']} style={{ height: '100%', borderRight: 0 }}>
+                           <Item key="dashboard">
                                 <Link to="/"></Link>
-                                <span>home</span>
+                                <span>Dashboard</span>
+                            </Item>
+                            <Item key="Pokemons">
+                                <Link to="/pokemons"></Link>
+                                <span>Pokémons</span>
                             </Item>
                         </Menu>
                     </Sider>
