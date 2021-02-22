@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getPokemons } from '../services/apolloQuery'
+import { getPokemons } from '../shared/services/apolloQuery'
 
 
 const Dashboard = () => {

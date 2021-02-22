@@ -3,11 +3,12 @@ import { Switch,Redirect } from "react-router-dom";
 
 // Layout and Route Component
 import LayoutMain from '../layouts/LayoutMain';
-import RouteWithLayout from '../components/RouteWithLayout/RouteWithLayout';
+
 
 // Content Component
-import Dashboard from '../components/Dashboard';
-import PokemonList from '../components/PokemonList/PokemonList';
+import Dashboard from '../../views/DashboardContainer';
+import Pokemons from '../../views/PokemonsContainer'
+import RouteWithLayout from '../components/RouteWithLayout/RouteWithLayout';
 
 
 
@@ -16,13 +17,13 @@ const Routes = () => {
   return (
     <Switch>
       <RouteWithLayout
-        component={PokemonList}
+        component={Dashboard}
         exact
         layout={LayoutMain}
         path="/pokemons"
       />
       <RouteWithLayout
-        component={PokemonList}
+        component={Pokemons}
         exact
         layout={LayoutMain}
         path="/"
