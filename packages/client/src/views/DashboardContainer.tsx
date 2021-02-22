@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { getPokemons } from '../shared/services/apolloQuery'
-
-
 const Dashboard = () => {
 
 

@@ -3,41 +3,61 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import PokemonList from '../components/PokemonList/PokemonList';
 import PokemonSearch from '../components/PokemonSearch/PokemonSearch';
 
-import { getPokemons } from '../shared/services/apolloQuery';
+import { usePokemonsQuery } from '../shared/services/apolloQuery';
 
 
 const Pokemons = () => {
 
-    const { loading, error, data, fetchMore } = getPokemons(null)
+    const [ getPokemons , { loading, error, data, fetchMore } ] = usePokemonsQuery(null)
 
     const [pokemonList, setPokemonList] = useState<[]>([]);
+    const [moreData, setMoreData] = useState<any>();
     const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [endCursor, setEndCursor] = useState<string>('010');
 
 
+    // ------------ USE EFFECT ------------
+
+    useEffect(() => {
+        getPokemons()
+    }, [])
+
     useEffect(() => {
         if (data?.pokemons && pokemonList.length === 0) {
-            const { edges } = data.pokemons;
-            const pokemonLinst = edges.map((item: any) => item.node);
+            const pokemonLinst = data?.pokemons?.edges?.map((item: any) => item.node);
             setPokemonList(pokemonLinst);
         }
+        getMorePokemos();
+
     }, [data])
 
+    useEffect(() => {
+        if(moreData) {
+            const newPokemonLinst: [] = moreData?.data?.pokemons?.edges.map((item: any) => item.node);
+            setPokemonList([...pokemonList, ...newPokemonLinst]);
+            setEndCursor(moreData.data.pokemons.pageInfo.endCursor);
+        }
+    
+    }, [moreData])
 
-    const hendlerPagination = async (event: any) => {
-        setLoadingMore(true);
-        const newData: any = await fetchMore({ variables: { after: endCursor } });
 
-        const { edges } = newData.data.pokemons;
-        const newPokemonLinst: [] = edges.map((item: any) => item.node);
+    // ------------- FUNCTIONS --------------------
 
-        setPokemonList([...pokemonList, ...newPokemonLinst]);
-        setEndCursor(newData.data.pokemons.pageInfo.endCursor);
-
-        setTimeout(() => {
-            setLoadingMore(false);
-        }, 200)
+    const paginationHandler = () => {
+        getMorePokemos();
     }
+
+    const getMorePokemos = async () => {
+        if(fetchMore) {
+            setLoadingMore(true);
+            const newPokemons: any = await fetchMore({ variables: { after: endCursor } });
+            setMoreData(newPokemons);
+            setLoadingMore(false);
+        }
+    }
+
+
+    // ---------- RENDERING ---------------------
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error!</p>;
@@ -46,12 +66,11 @@ const Pokemons = () => {
         <>
             <PokemonSearch title='Pokèmon'></PokemonSearch>
             <PokemonList
-                hendlerPagination={hendlerPagination}
+                paginationHandler={paginationHandler}
                 pokemonList={pokemonList}
                 loadingMore={loadingMore}
             />
         </>
-
     )
 
 }
