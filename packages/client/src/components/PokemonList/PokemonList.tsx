@@ -2,18 +2,16 @@ import React, { FunctionComponent } from 'react';
 
 import { Table, Typography, Input } from 'antd';
 import columns from './columns';
-
-
-const { Search } = Input;
-const { Title } = Typography;
+import { NodePokemon } from '../../shared/interfaces/interface';
 
 interface PokemonListProps {
   paginationHandler: () => void,
-  pokemonList: [],
+  pokemonList: NodePokemon[],
   loadingMore: boolean
+  disabledPagination: boolean
 }
 
-const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, pokemonList, loadingMore }) => {
+const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, pokemonList, loadingMore, disabledPagination }) => {
 
   return (
     <>
@@ -23,7 +21,7 @@ const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, po
           onChange={paginationHandler}
           dataSource={pokemonList}
           loading={loadingMore}
-          pagination={{ pageSize: 10, total: 150, simple: true }} />
+          pagination={{ pageSize: 10, total: 150, simple: true, disabled: disabledPagination}} />
       </div>
     </>
   )

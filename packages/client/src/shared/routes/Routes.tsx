@@ -6,8 +6,8 @@ import LayoutMain from '../layouts/LayoutMain';
 
 
 // Content Component
-import Dashboard from '../../views/DashboardContainer';
-import Pokemons from '../../views/PokemonsContainer'
+import DashboardView from '../../views/DashboardContainer';
+import PokemonsView  from '../../views/PokemonsContainer'
 import RouteWithLayout from '../components/RouteWithLayout/RouteWithLayout';
 
 
@@ -17,13 +17,13 @@ const Routes = () => {
   return (
     <Switch>
       <RouteWithLayout
-        component={Dashboard}
+        component={DashboardView}
         exact
         layout={LayoutMain}
         path="/pokemons"
       />
       <RouteWithLayout
-        component={Pokemons}
+        component={PokemonsView}
         exact
         layout={LayoutMain}
         path="/"

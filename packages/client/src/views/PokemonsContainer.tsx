@@ -1,54 +1,117 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, SyntheticEvent, useEffect, useState } from 'react';
 
+// Components
 import PokemonList from '../components/PokemonList/PokemonList';
 import PokemonSearch from '../components/PokemonSearch/PokemonSearch';
 
-import { usePokemonsQuery } from '../shared/services/apolloQuery';
+// Interfaces
+import { ResultQuery, EdgePokemon, NodePokemon } from '../shared/interfaces/interface';
+
+// Service
+import { usePokemonsQuery, useSearchPokemonByName } from '../shared/services/apolloQuery';
 
 
-const Pokemons = () => {
 
-    const [ getPokemons , { loading, error, data, fetchMore } ] = usePokemonsQuery(null)
+/**
+ * 
+ * 
+ * 
+ */
+const PokemonsContainer = () => {
 
-    const [pokemonList, setPokemonList] = useState<[]>([]);
-    const [moreData, setMoreData] = useState<any>();
-    const [loadingMore, setLoadingMore] = useState<boolean>(false);
-    const [endCursor, setEndCursor] = useState<string>('010');
+    const [getPokemons, { loading, error, data: resultPokemonsQuery, fetchMore }] = usePokemonsQuery("000")
+    const [getPokemonByName, { data: resultSearchQuery }] = useSearchPokemonByName()
 
 
-    // ------------ USE EFFECT ------------
+    const [pokemonList, setPokemonList]      = useState<NodePokemon[]>([]);
+    const [pokemonToShow, setPokemonsToShow] = useState<NodePokemon[]>([]);
+    const [moreData, setMoreData]            = useState<any>();
 
+    const [loadingMore, setLoadingMore]      = useState<boolean>(false);
+    const [endCursor, setEndCursor]          = useState<string>('010');
+    const [searchValue, setSearchValue]      = useState<string | null>(null);
+
+
+    /***************************************
+     *            USE EFFECT               *
+    ****************************************/
+
+
+    // Run Pokemon query
     useEffect(() => {
         getPokemons()
     }, [])
 
+    // Run Search query
     useEffect(() => {
-        if (data?.pokemons && pokemonList.length === 0) {
-            const pokemonLinst = data?.pokemons?.edges?.map((item: any) => item.node);
-            setPokemonList(pokemonLinst);
+        searchValue && getPokemonByName({ variables: { q: searchValue } })
+    }, [searchValue])
+
+
+    // Handle Result of Search query
+    useEffect(() => {
+        if (resultSearchQuery) {
+            const pokemons = getNodes(resultSearchQuery);
+            setPokemonsToShow(pokemons);
+        }
+    }, [resultSearchQuery])
+
+
+    // Handle Result of Pokemon query
+    useEffect(() => {
+        if (resultPokemonsQuery?.pokemons && pokemonList.length === 0) {
+            const pokemonList = getNodes(resultPokemonsQuery);
+            setPokemonList(pokemonList);
+            setPokemonsToShow(pokemonList);
         }
         getMorePokemos();
 
-    }, [data])
+    }, [resultPokemonsQuery])
 
+
+    // Handle Pagination
     useEffect(() => {
-        if(moreData) {
-            const newPokemonLinst: [] = moreData?.data?.pokemons?.edges.map((item: any) => item.node);
+        if (moreData) {
+            const newPokemonLinst = getNodes(moreData?.data);
             setPokemonList([...pokemonList, ...newPokemonLinst]);
+            setPokemonsToShow([...pokemonList, ...newPokemonLinst]);
             setEndCursor(moreData.data.pokemons.pageInfo.endCursor);
         }
-    
     }, [moreData])
 
 
-    // ------------- FUNCTIONS --------------------
+
+    /***************************************
+     *             ON EVENT                *
+    ****************************************/
+
+    const onPressEnter = (event: any) => {
+        setSearchValue(event.target.value);
+    }
+
+    const onChange = (event: any) => {
+        if (!event.target.value) {
+            setSearchValue(null);
+            setPokemonsToShow(pokemonList);
+        }
+    }
+
+    const onSearch = (value: string) => {
+        setSearchValue(value);
+    }
 
     const paginationHandler = () => {
         getMorePokemos();
     }
 
+
+    /***************************************
+     *              FUNCTIONS              *
+    ****************************************/
+
+
     const getMorePokemos = async () => {
-        if(fetchMore) {
+        if (fetchMore) {
             setLoadingMore(true);
             const newPokemons: any = await fetchMore({ variables: { after: endCursor } });
             setMoreData(newPokemons);
@@ -56,18 +119,32 @@ const Pokemons = () => {
         }
     }
 
+    const getNodes = (data: ResultQuery) : NodePokemon[]  => {
+        return data.pokemons.edges.map((edge: EdgePokemon) => edge.node);
+    } 
 
-    // ---------- RENDERING ---------------------
+
+    
+
+    /***************************************
+     *              RENDERING              *
+    ****************************************/
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error!</p>;
 
     return (
         <>
-            <PokemonSearch title='Pokèmon'></PokemonSearch>
+            <PokemonSearch
+                title='Pokèmon'
+                onPressEnter={onPressEnter}
+                onSearch={onSearch}
+                onChange={onChange}
+            />
             <PokemonList
                 paginationHandler={paginationHandler}
-                pokemonList={pokemonList}
+                disabledPagination={searchValue !== null}
+                pokemonList={pokemonToShow}
                 loadingMore={loadingMore}
             />
         </>
@@ -76,4 +153,4 @@ const Pokemons = () => {
 }
 
 
-export default Pokemons;
+export default PokemonsContainer;
