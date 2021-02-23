@@ -1,11 +1,25 @@
-import { Tag } from 'antd';
+import { Tag, Image,Typography} from 'antd';
+
+const { Title } = Typography;
 
 const columns = [
+    {
+        title: "",
+        dataIndex: "id",
+        key: "id",
+        render: (id: any) => (
+            <Image
+                width={100}
+                height={100}
+                src={`https://pokeres.bastionbot.org/images/pokemon/${Number(id)}.png`}
+            />
+        )
+    },
     {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        render: (text: any) => <a>{text}</a>,
+        render: (text: string) => <Title level={4}>{text}</Title>
     },
     {
         title: 'Classification',

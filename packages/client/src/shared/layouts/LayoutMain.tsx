@@ -20,17 +20,17 @@ const LayoutMain : FunctionComponent = ({ children }) => {
 
     return (
             <Layout className="inherit">
-                <Header>
-                    <div className="logo" />
+                <Header style={{ background: 'hsl(198, 100%, 32%)'}}>
+
                 </Header>
                 <Layout>
                     <Sider width={200}>
-                        <Menu mode="inline" defaultSelectedKeys={['dashboard']} style={{ height: '100%', borderRight: 0 }}>
-                           <Item key="dashboard">
+                        <Menu mode="inline"  defaultSelectedKeys={['dashboard']} style={{ height: '100%', borderRight: 0 }}>
+                           <Item style={{ fontSize: '18px', fontFamily:'inherit'}}key="dashboard">
                                 <Link to="/"></Link>
                                 <span>Dashboard</span>
                             </Item>
-                            <Item key="Pokemons">
+                            <Item style={{ fontSize: '18px', fontFamily:'inherit'}} key="Pokemons">
                                 <Link to="/pokemons"></Link>
                                 <span>Pokémons</span>
                             </Item>
@@ -42,7 +42,7 @@ const LayoutMain : FunctionComponent = ({ children }) => {
                         </Content>
                     </Layout>
                 </Layout>
-                <Footer style={{ textAlign: 'center' }}>Satispay Assignment ©2021 Frontend</Footer>
+                <Footer style={{ textAlign: 'center', height: '200px' } }>Satispay Assignment ©2021 Frontend</Footer>
             </Layout>
     )
 }

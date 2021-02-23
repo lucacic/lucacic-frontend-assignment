@@ -1,3 +1,7 @@
+
+export interface ResultQueryMore {
+    data : ResultQuery
+}
 export interface ResultQuery {
     pokemons: Pokemons
 }

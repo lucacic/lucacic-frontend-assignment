@@ -1,15 +1,19 @@
-import React, { FunctionComponent, SyntheticEvent, useEffect, useState } from 'react';
+import React, { FunctionComponent, SyntheticEvent, useCallback, useEffect, useState } from 'react';
 
 // Components
 import PokemonList from '../components/PokemonList/PokemonList';
 import PokemonSearch from '../components/PokemonSearch/PokemonSearch';
 
 // Interfaces
-import { ResultQuery, EdgePokemon, NodePokemon } from '../shared/interfaces/interface';
+import { ResultQuery, ResultQueryMore, EdgePokemon, NodePokemon } from '../shared/interfaces/interface';
 
 // Service
 import { usePokemonsQuery, useSearchPokemonByName } from '../shared/services/apolloQuery';
 
+
+const getNodes = (data: ResultQuery) : NodePokemon[]  => {
+    return data.pokemons.edges.map((edge: EdgePokemon) => edge.node);
+} 
 
 
 /**
@@ -19,17 +23,30 @@ import { usePokemonsQuery, useSearchPokemonByName } from '../shared/services/apo
  */
 const PokemonsContainer = () => {
 
-    const [getPokemons, { loading, error, data: resultPokemonsQuery, fetchMore }] = usePokemonsQuery("000")
-    const [getPokemonByName, { data: resultSearchQuery }] = useSearchPokemonByName()
+    const [
+        fetchPokemons, { 
+        loading,
+        error, 
+        data: resultPokemonsQuery, 
+        fetchMore 
+    }] = usePokemonsQuery();
+
+    const [
+        fetchPokemonByName, { 
+        data: resultSearchQuery 
+    }] = useSearchPokemonByName()
 
 
     const [pokemonList, setPokemonList]      = useState<NodePokemon[]>([]);
     const [pokemonToShow, setPokemonsToShow] = useState<NodePokemon[]>([]);
-    const [moreData, setMoreData]            = useState<any>();
 
-    const [loadingMore, setLoadingMore]      = useState<boolean>(false);
-    const [endCursor, setEndCursor]          = useState<string>('010');
     const [searchValue, setSearchValue]      = useState<string | null>(null);
+
+    const [hasNextPage, setHasNextPage]      = useState<boolean>(false);
+    const [endCursor, setEndCursor]          = useState<string>('010');
+
+    const [moreData, setMoreData]            = useState<ResultQueryMore>();
+    const [loadingMore, setLoadingMore]      = useState<boolean>(false);
 
 
     /***************************************
@@ -39,12 +56,12 @@ const PokemonsContainer = () => {
 
     // Run Pokemon query
     useEffect(() => {
-        getPokemons()
+        fetchPokemons()
     }, [])
 
     // Run Search query
     useEffect(() => {
-        searchValue && getPokemonByName({ variables: { q: searchValue } })
+        searchValue && fetchPokemonByName({ variables: { q: searchValue } })
     }, [searchValue])
 
 
@@ -57,22 +74,25 @@ const PokemonsContainer = () => {
     }, [resultSearchQuery])
 
 
-    // Handle Result of Pokemon query
+    // Handle Result of fetchPokemon
     useEffect(() => {
         if (resultPokemonsQuery?.pokemons && pokemonList.length === 0) {
             const pokemonList = getNodes(resultPokemonsQuery);
             setPokemonList(pokemonList);
             setPokemonsToShow(pokemonList);
+            const hasNextPage = resultPokemonsQuery?.pokemons.pageInfo.hasNextPage;
+
+            setHasNextPage(hasNextPage);
+            hasNextPage && getMorePokemos()
         }
-        getMorePokemos();
 
     }, [resultPokemonsQuery])
 
 
-    // Handle Pagination
+    // Handle Result of fetchMore
     useEffect(() => {
         if (moreData) {
-            const newPokemonLinst = getNodes(moreData?.data);
+            const newPokemonLinst = getNodes(moreData.data);
             setPokemonList([...pokemonList, ...newPokemonLinst]);
             setPokemonsToShow([...pokemonList, ...newPokemonLinst]);
             setEndCursor(moreData.data.pokemons.pageInfo.endCursor);
@@ -111,17 +131,14 @@ const PokemonsContainer = () => {
 
 
     const getMorePokemos = async () => {
-        if (fetchMore) {
+        if (fetchMore && hasNextPage) {
             setLoadingMore(true);
-            const newPokemons: any = await fetchMore({ variables: { after: endCursor } });
+            const newPokemons: ResultQueryMore = await fetchMore({ variables: { after: endCursor } });
             setMoreData(newPokemons);
             setLoadingMore(false);
+            setHasNextPage(newPokemons.data.pokemons.pageInfo.hasNextPage);
         }
     }
-
-    const getNodes = (data: ResultQuery) : NodePokemon[]  => {
-        return data.pokemons.edges.map((edge: EdgePokemon) => edge.node);
-    } 
 
 
     

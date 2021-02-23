@@ -1,12 +1,18 @@
 import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { ResultQuery, ResultQueryMore } from '../interfaces/interface';
 
-export const usePokemonsQuery = ($after: string) => useLazyQuery(gql`
+interface VariableSearchPokemon {
+  q: string
+}
+
+export const usePokemonsQuery = () => useLazyQuery<ResultQuery>(gql`
   query pokemons($after: ID) {
     pokemons(after: $after) {
       edges {
         node {
           id
           name
+          classification
           types
         }
         cursor
@@ -16,15 +22,10 @@ export const usePokemonsQuery = ($after: string) => useLazyQuery(gql`
         endCursor
       }
     }
-  }`,
-  {
-    variables: {
-      after: $after,
-    }
-  }
+  }`
 );
 
-export const useSearchPokemonByName = () => useLazyQuery(gql`
+export const useSearchPokemonByName = () => useLazyQuery<ResultQuery, VariableSearchPokemon >(gql`
   query pokemons($q: String) {
     pokemons(q: $q) {
       edges {

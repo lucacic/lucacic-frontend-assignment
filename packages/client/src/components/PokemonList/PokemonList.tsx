@@ -21,7 +21,7 @@ const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, po
           onChange={paginationHandler}
           dataSource={pokemonList}
           loading={loadingMore}
-          pagination={{ pageSize: 10, total: 150, simple: true, disabled: disabledPagination}} />
+          pagination={{ pageSize: 10, position: ["topLeft"], total: 150, simple: true, disabled: disabledPagination}} />
       </div>
     </>
   )
