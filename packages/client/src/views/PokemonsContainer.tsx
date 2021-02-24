@@ -159,6 +159,7 @@ const PokemonsContainer = () => {
                 onChange={onChange}
             />
             <PokemonList
+                searchValue={searchValue}
                 paginationHandler={paginationHandler}
                 disabledPagination={searchValue !== null}
                 pokemonList={pokemonToShow}

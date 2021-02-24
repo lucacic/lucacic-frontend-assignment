@@ -9,15 +9,16 @@ interface PokemonListProps {
   pokemonList: NodePokemon[],
   loadingMore: boolean
   disabledPagination: boolean
+  searchValue: string | null;
 }
 
-const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, pokemonList, loadingMore, disabledPagination }) => {
+const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, pokemonList, loadingMore, disabledPagination, searchValue }) => {
 
   return (
     <>
       <div>
         <Table
-          columns={columns}
+          columns={columns(searchValue)}
           onChange={paginationHandler}
           dataSource={pokemonList}
           loading={loadingMore}

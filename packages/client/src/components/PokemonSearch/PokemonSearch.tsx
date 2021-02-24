@@ -24,7 +24,7 @@ const PokemonSearch: FunctionComponent<PokemonSearchProps> = ({title, onPressEnt
         onSearch={onSearch} 
         onPressEnter={onPressEnter} 
         onChange={onChange}
-        placeholder="search Pokémons by name" 
+        placeholder="Search Pokémons by name" 
         enterButton />
       </div>
     </>
