@@ -8,7 +8,8 @@ module.exports = {
     },
     output: {
         filename: 'main.[name].[chunkhash].js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: '/'
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
@@ -26,6 +27,9 @@ module.exports = {
                 exclude: '/node_modules/'
             }
         ],
+    },
+    devServer: {
+        historyApiFallback: true,
     },
     devtool: 'source-map',
     plugins: [
