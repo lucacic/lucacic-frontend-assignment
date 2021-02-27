@@ -3,8 +3,10 @@ export interface ResultQueryMore {
     data : ResultQuery
 }
 export interface ResultQuery {
-    pokemons: Pokemons
+    pokemons?: Pokemons
+    pokemonsByType?: Pokemons
 }
+
 
 export interface NodePokemon {
     id: string,

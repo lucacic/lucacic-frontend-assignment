@@ -12,7 +12,7 @@ import RouteWithLayout from '../components/RouteWithLayout/RouteWithLayout';
 
 
 
-const Routes = () => {             
+const Routes: React.FC<any> = () => {             
 
   return (
     <Switch>

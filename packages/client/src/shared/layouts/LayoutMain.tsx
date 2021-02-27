@@ -12,16 +12,12 @@ const { Header, Content, Sider, Footer } = Layout;
 const { Item } = Menu;
 
 
-
-
-
 // COMPONENT
 const LayoutMain : FunctionComponent = ({ children }) => {
 
     return (
             <Layout className="inherit">
                 <Header style={{ background: 'hsl(198, 100%, 32%)'}}>
-
                 </Header>
                 <Layout>
                     <Sider width={200}>

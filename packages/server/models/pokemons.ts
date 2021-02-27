@@ -13,7 +13,7 @@ interface Pokemon {
 }
 
 const SIZE = 10;
-let lastSubSet: Pokemon[];
+let filteredPokemon : Pokemon[] = [];
 
 export function query(args: {
   after?: string;
@@ -40,16 +40,11 @@ export function query(args: {
             O.fold(() => as, idx => as.slice(idx))
           );
 
-  const subSet: Pokemon[] = pipe(
-    data,
-    filterByQ,
-  )
-
-  lastSubSet = [...subSet];
-  console.log(lastSubSet.length);
 
   const results: Pokemon[] = pipe(
-    subSet,
+    // search name only on list filtred pokemon
+    filteredPokemon.length !== 0 ? filteredPokemon : data,
+    filterByQ,
     sliceByAfter,
     // slicing limit + 1 because the `toConnection` function should known the connection size to determine if there are more results
     slice(0, limit + 1)
@@ -66,12 +61,10 @@ export function query(args: {
  * @param args 
  */
 export function pokemonsByType(args: {
-  after?: string;
-  limit?: number;
   type?: string;
 }): Connection<Pokemon> {
 
-  const { after, type, limit = SIZE } = args;
+  const { type } = args;
 
   const filterByType: (as: Pokemon[]) => Pokemon[] =
     type === undefined
@@ -80,24 +73,16 @@ export function pokemonsByType(args: {
         return p.types.map(item => item.toLowerCase()).includes(type.toLowerCase())
       });
 
-  const sliceByAfter: (as: Pokemon[]) => Pokemon[] =
-    after === undefined
-      ? identity
-      : as =>
-          pipe(
-            as,
-            A.findIndex(a => a.id === after),
-            O.map(a => a + 1),
-            O.fold(() => as, idx => as.slice(idx))
-          );
-  
-
   const results: Pokemon[] = pipe(
-    lastSubSet,
+    data,
     filterByType,
-    sliceByAfter,
-    slice(0, limit + 1)
-  );
-  return toConnection(results, limit);
+  )
+
+  filteredPokemon = [...results];
+
+  console.log('Type:', type);
+  console.log('Found', filteredPokemon.length);
+
+  return toConnection(results, results.length);
 }
 

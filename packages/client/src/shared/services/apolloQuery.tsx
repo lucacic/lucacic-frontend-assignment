@@ -5,7 +5,15 @@ interface VariableSearchPokemon {
   q: string
 }
 
-export const usePokemonsQuery = () => useLazyQuery<ResultQuery>(gql`
+interface VariableFilterPokemon {
+  type: string
+}
+
+interface VariablePokemons {
+  after: string
+}
+
+export const usePokemonsQuery = () => useLazyQuery<ResultQuery, VariablePokemons>(gql`
   query pokemons($after: ID) {
     pokemons(after: $after) {
       edges {
@@ -32,6 +40,26 @@ export const useSearchPokemonByName = () => useLazyQuery<ResultQuery, VariableSe
         node {
           id
           name
+          types
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }`
+);
+
+export const useFilterPokemonByType = () => useLazyQuery<ResultQuery, VariableFilterPokemon >(gql`
+  query pokemonsByType($type: String) {
+    pokemonsByType(type: $type ) {
+      edges {
+        node {
+          id
+          name
+          classification
           types
         }
         cursor

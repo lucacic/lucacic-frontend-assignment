@@ -1,58 +1,88 @@
 import React, { FunctionComponent, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import PokemonFilter from '../components/PokemonFilter/PokemonFilter';
 
 // Components
 import PokemonList from '../components/PokemonList/PokemonList';
 import PokemonSearch from '../components/PokemonSearch/PokemonSearch';
+import PokemonTitle from '../components/PokemonTitle/PokemonTitle';
 
 // Interfaces
 import { ResultQuery, ResultQueryMore, EdgePokemon, NodePokemon } from '../shared/interfaces/interface';
 
 // Service
-import { usePokemonsQuery, useSearchPokemonByName } from '../shared/services/apolloQuery';
+import { usePokemonsQuery, useFilterPokemonByType, useSearchPokemonByName } from '../shared/services/apolloQuery';
+import { PokemonType } from '../utils/pokemonsType';
 
 
-const getNodes = (data: ResultQuery) : NodePokemon[]  => {
-    return data.pokemons.edges.map((edge: EdgePokemon) => edge.node);
-} 
+const getNodes = (data: ResultQuery): NodePokemon[] => {
+    if (data.pokemons) {
+        return data.pokemons.edges.map((edge: EdgePokemon) => edge.node);
+    }
+    if (data.pokemonsByType) {
+        return data.pokemonsByType.edges.map((edge: EdgePokemon) => edge.node);
+    }
+    return []
+}
 
+
+import './style.css'
 
 /**
  * 
- * 
+ * POKEMONS VIEW CONTAINER
  * 
  */
 const PokemonsContainer = () => {
 
-    const [
-        fetchPokemons, { 
-        loading,
-        error, 
-        data: resultPokemonsQuery, 
-        fetchMore 
-    }] = usePokemonsQuery();
+    /***************************************
+     *            QUERY                    *
+    ****************************************/
 
     const [
-        fetchPokemonByName, { 
-        data: resultSearchQuery 
-    }] = useSearchPokemonByName()
+        fetchPokemons, {
+            loading,
+            error,
+            data: resultPokemonsQuery,
+            fetchMore
+        }] = usePokemonsQuery();
+
+    const [
+        fetchPokemonByName, {
+            data: resultSearchQuery
+        }] = useSearchPokemonByName()
+
+    const [
+        fetchPokemonByType, {
+            data: resultFilterQuery
+        }] = useFilterPokemonByType()
 
 
-    const [pokemonList, setPokemonList]      = useState<NodePokemon[]>([]);
+    /***************************************
+     *            USE STATE                *
+    ****************************************/
+
+    const [pokemonList, setPokemonList] = useState<NodePokemon[]>([]);
+    const [pokemonFiltred, setPokemonFiltred] = useState<NodePokemon[]>([]);
     const [pokemonToShow, setPokemonsToShow] = useState<NodePokemon[]>([]);
 
-    const [searchValue, setSearchValue]      = useState<string | null>(null);
+    const [searchValue, setSearchValue] = useState<string | null>(null);
+    const [filterType, setFilterType] = useState<string>();
 
-    const [hasNextPage, setHasNextPage]      = useState<boolean>(false);
-    const [endCursor, setEndCursor]          = useState<string>('010');
+    const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+    const [endCursor, setEndCursor] = useState<string>('010');
 
-    const [moreData, setMoreData]            = useState<ResultQueryMore>();
-    const [loadingMore, setLoadingMore]      = useState<boolean>(false);
+    const [moreData, setMoreData] = useState<ResultQueryMore>();
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
+
+    window.onbeforeunload = () => {
+        fetchPokemonByType({ variables: { type: "reset" } })
+    }
 
 
     /***************************************
      *            USE EFFECT               *
     ****************************************/
-
 
     // Run Pokemon query
     useEffect(() => {
@@ -64,8 +94,7 @@ const PokemonsContainer = () => {
         searchValue && fetchPokemonByName({ variables: { q: searchValue } })
     }, [searchValue])
 
-
-    // Handle Result of Search query
+    // Handle Result of fetchPokemonByName
     useEffect(() => {
         if (resultSearchQuery) {
             const pokemons = getNodes(resultSearchQuery);
@@ -74,9 +103,9 @@ const PokemonsContainer = () => {
     }, [resultSearchQuery])
 
 
-    // Handle Result of fetchPokemon
+    // Handle Result of fetchPokemons
     useEffect(() => {
-        if (resultPokemonsQuery?.pokemons && pokemonList.length === 0) {
+        if (resultPokemonsQuery?.pokemons) {
             const pokemonList = getNodes(resultPokemonsQuery);
             setPokemonList(pokemonList);
             setPokemonsToShow(pokemonList);
@@ -95,53 +124,81 @@ const PokemonsContainer = () => {
             const newPokemonLinst = getNodes(moreData.data);
             setPokemonList([...pokemonList, ...newPokemonLinst]);
             setPokemonsToShow([...pokemonList, ...newPokemonLinst]);
-            setEndCursor(moreData.data.pokemons.pageInfo.endCursor);
+            moreData.data.pokemons && setEndCursor(moreData.data.pokemons.pageInfo.endCursor);
         }
     }, [moreData])
 
+    // Handle filter type
+    useEffect(() => {
+        if (filterType === undefined) {
+            return
+        } else if (filterType !== PokemonType.all) {
+            fetchPokemonByType({ variables: { type: filterType } })
+        } else {
+            fetchPokemonByType({ variables: { type: "All pokemon" } })
+            setPokemonsToShow(pokemonList);
+            setHasNextPage(true);
+        }
+    }, [filterType])
 
+
+    useEffect(() => {
+        if (resultFilterQuery && filterType !== PokemonType.all) {
+            const pokemons = getNodes(resultFilterQuery);
+            setPokemonFiltred(pokemons);
+            setPokemonsToShow(pokemons);
+            setHasNextPage(resultFilterQuery.pokemonsByType?.pageInfo.hasNextPage || false);
+        }
+    }, [resultFilterQuery])
 
     /***************************************
-     *             ON EVENT                *
+     *         HANDLERS                    *
     ****************************************/
 
-    const onPressEnter = (event: any) => {
+    const onEnterPressHandler = (event: any) => {
+        // setSearchValue(event.target.value);
+    }
+    
+    const onSearchHandler = (value: string) => {
+        // setSearchValue(value);
+    }
+
+    const onSelectHandler = (value: string) => {
+        setFilterType(value);
+    };
+
+    const onChangeHandler  = (event: any) => {
+        if (!event.target.value) {
+            if (filterType === 'all' || filterType === undefined) {
+                setPokemonsToShow(pokemonList);
+                setHasNextPage(true);
+            } else {
+                setPokemonsToShow(pokemonFiltred);
+            }
+        }
         setSearchValue(event.target.value);
     }
 
-    const onChange = (event: any) => {
-        if (!event.target.value) {
-            setSearchValue(null);
-            setPokemonsToShow(pokemonList);
-        }
-    }
 
-    const onSearch = (value: string) => {
-        setSearchValue(value);
-    }
 
-    const paginationHandler = () => {
+    const onPaginationHandler = () => {
         getMorePokemos();
     }
 
 
-    /***************************************
-     *              FUNCTIONS              *
-    ****************************************/
-
-
     const getMorePokemos = async () => {
         if (fetchMore && hasNextPage) {
+            console.log('pagination')
             setLoadingMore(true);
             const newPokemons: ResultQueryMore = await fetchMore({ variables: { after: endCursor } });
             setMoreData(newPokemons);
             setLoadingMore(false);
-            setHasNextPage(newPokemons.data.pokemons.pageInfo.hasNextPage);
+            newPokemons.data.pokemons && setHasNextPage(newPokemons.data.pokemons.pageInfo.hasNextPage);
         }
     }
 
 
-    
+
 
     /***************************************
      *              RENDERING              *
@@ -152,22 +209,31 @@ const PokemonsContainer = () => {
 
     return (
         <>
-            <PokemonSearch
-                title='Pokèmon'
-                onPressEnter={onPressEnter}
-                onSearch={onSearch}
-                onChange={onChange}
-            />
-            <PokemonList
-                searchValue={searchValue}
-                paginationHandler={paginationHandler}
-                disabledPagination={searchValue !== null}
-                pokemonList={pokemonToShow}
-                loadingMore={loadingMore}
-            />
+            <PokemonTitle title="Search for your favorite Pokèmon"/>
+            <div className="containerList">            
+  
+                <div className="containerSearch">
+                    <PokemonFilter
+                        onSelect={onSelectHandler}
+                    />
+                    <PokemonSearch
+                        onPressEnter={onEnterPressHandler}
+                        onSearch={onSearchHandler}
+                        onChange={onChangeHandler}
+                    />
+                </div>
+                <PokemonList
+                    size={filterType === PokemonType.all || filterType === undefined ? 150 : pokemonToShow.length}
+                    searchValue={searchValue}
+                    disabledPagination={false}
+                    pokemonList={pokemonToShow}
+                    loadingMore={loadingMore}
+                    paginationHandler={onPaginationHandler}
+                />
+            </div>
+
         </>
     )
-
 }
 
 

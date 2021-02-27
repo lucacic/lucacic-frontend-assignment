@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 import { Table, Typography, Input } from 'antd';
 import columns from './columns';
@@ -10,9 +10,16 @@ interface PokemonListProps {
   loadingMore: boolean
   disabledPagination: boolean
   searchValue: string | null;
+  size: number,
+  filterType?: string | undefined
 }
 
-const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, pokemonList, loadingMore, disabledPagination, searchValue }) => {
+/**
+ * 
+ * 
+ * @param param0 
+ */
+const PokemonList: React.FC<PokemonListProps> = ({ paginationHandler, pokemonList, loadingMore, disabledPagination, searchValue, size }) => {
 
   return (
     <>
@@ -22,7 +29,13 @@ const PokemonList: FunctionComponent<PokemonListProps> = ({paginationHandler, po
           onChange={paginationHandler}
           dataSource={pokemonList}
           loading={loadingMore}
-          pagination={{ pageSize: 10, position: ["topLeft"], total: 150, simple: true, disabled: disabledPagination}} />
+          pagination={{
+            pageSize: 10,
+            position: ["topLeft"],
+            total: size,
+            simple: true,
+            disabled: disabledPagination,
+          }} />
       </div>
     </>
   )
