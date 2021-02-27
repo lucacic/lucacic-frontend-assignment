@@ -1,10 +1,15 @@
 import React from 'react';
+import PokemonTitle from '../components/PokemonTitle/PokemonTitle';
 
 const Dashboard = () => {
 
 
-    return (
-        <>Dashboard</>
+    return (    
+            <PokemonTitle 
+                title="Welcome to Pokèmon Home"
+                subTitle="Go to Pokedex and enjoy!"
+
+            />
     )
 }
 

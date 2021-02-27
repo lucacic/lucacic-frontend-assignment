@@ -33,13 +33,14 @@ export const usePokemonsQuery = () => useLazyQuery<ResultQuery, VariablePokemons
   }`
 );
 
-export const useSearchPokemonByName = () => useLazyQuery<ResultQuery, VariableSearchPokemon >(gql`
+export const useSearchPokemonByName = () => useLazyQuery<ResultQuery, VariableSearchPokemon>(gql`
   query pokemons($q: String) {
     pokemons(q: $q) {
       edges {
         node {
           id
           name
+          classification
           types
         }
         cursor

@@ -10,20 +10,20 @@ import DashboardView from '../../views/DashboardContainer';
 import PokemonsView  from '../../views/PokemonsContainer'
 import RouteWithLayout from '../components/RouteWithLayout/RouteWithLayout';
 
-
+DashboardView
 
 const Routes: React.FC<any> = () => {             
 
   return (
     <Switch>
       <RouteWithLayout
-        component={DashboardView}
+        component={PokemonsView}
         exact
         layout={LayoutMain}
         path="/pokemons"
       />
       <RouteWithLayout
-        component={PokemonsView}
+        component={DashboardView}
         exact
         layout={LayoutMain}
         path="/"

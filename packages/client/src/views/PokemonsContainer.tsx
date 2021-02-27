@@ -66,7 +66,7 @@ const PokemonsContainer = () => {
     const [pokemonToShow, setPokemonsToShow] = useState<NodePokemon[]>([]);
 
     const [searchValue, setSearchValue] = useState<string | null>(null);
-    const [filterType, setFilterType] = useState<string>();
+    const [filterType, setFilterType] = useState<string>('all');
 
     const [hasNextPage, setHasNextPage] = useState<boolean>(false);
     const [endCursor, setEndCursor] = useState<string>('010');
@@ -179,12 +179,9 @@ const PokemonsContainer = () => {
         setSearchValue(event.target.value);
     }
 
-
-
     const onPaginationHandler = () => {
         getMorePokemos();
     }
-
 
     const getMorePokemos = async () => {
         if (fetchMore && hasNextPage) {
@@ -209,9 +206,7 @@ const PokemonsContainer = () => {
 
     return (
         <>
-            <PokemonTitle title="Search for your favorite Pokèmon"/>
             <div className="containerList">            
-  
                 <div className="containerSearch">
                     <PokemonFilter
                         onSelect={onSelectHandler}
@@ -223,7 +218,7 @@ const PokemonsContainer = () => {
                     />
                 </div>
                 <PokemonList
-                    size={filterType === PokemonType.all || filterType === undefined ? 150 : pokemonToShow.length}
+                    size={filterType === PokemonType.all && !searchValue ? 150 : pokemonToShow.length}
                     searchValue={searchValue}
                     disabledPagination={false}
                     pokemonList={pokemonToShow}
