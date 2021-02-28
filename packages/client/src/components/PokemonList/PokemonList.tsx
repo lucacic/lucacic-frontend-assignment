@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Table, Typography, Input } from 'antd';
+import { Table } from 'antd';
 import columns from './columns';
 import { NodePokemon } from '../../shared/interfaces/interface';
 

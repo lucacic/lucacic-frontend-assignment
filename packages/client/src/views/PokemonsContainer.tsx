@@ -185,7 +185,6 @@ const PokemonsContainer = () => {
 
     const getMorePokemos = async () => {
         if (fetchMore && hasNextPage) {
-            console.log('pagination')
             setLoadingMore(true);
             const newPokemons: ResultQueryMore = await fetchMore({ variables: { after: endCursor } });
             setMoreData(newPokemons);
@@ -202,7 +201,7 @@ const PokemonsContainer = () => {
     ****************************************/
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error!</p>;
+    if (error) return <p>Server down!</p>;
 
     return (
         <>

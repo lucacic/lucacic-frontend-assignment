@@ -6,8 +6,8 @@ const Dashboard = () => {
 
     return (    
             <PokemonTitle 
-                title="Welcome to Pokèmon Home"
-                subTitle="Go to Pokedex and enjoy!"
+                title="Welcome to Pokémon Home"
+                subTitle="Go to Pokédex and enjoy!"
 
             />
     )

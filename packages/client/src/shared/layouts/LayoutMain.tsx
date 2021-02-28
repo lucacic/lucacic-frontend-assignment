@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // ANTD ICON
 import { ChromeFilled, MenuUnfoldOutlined } from '@ant-design/icons';
 
 // ANTD COMPONENTS
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Typography } from 'antd';
 
 // CSS
 import './layout-main-style.css'
@@ -17,6 +17,8 @@ const { Item } = Menu;
 
 // COMPONENT
 const LayoutMain: FunctionComponent = ({ children }) => {
+    
+    const location = useLocation();
 
     return (
         <Layout className="inherit">
@@ -24,18 +26,18 @@ const LayoutMain: FunctionComponent = ({ children }) => {
             </Header>
             <Layout>
                 <Sider width={200}>
-                    <Menu mode="inline" defaultSelectedKeys={['dashboard']} style={{ height: '100%', borderRight: 0 }}>
+                    <Menu mode="inline" defaultSelectedKeys={[`${location.pathname}`]} style={{ height: '100%', borderRight: 0 }}>
                         <Item
                             icon={<MenuUnfoldOutlined style={{ transform: 'scale(1.7)' }} />}
                             style={{ fontSize: '18px', fontFamily: 'inherit' }}
-                            key="dashboard">
+                            key="/">
                             <Link to="/"></Link>
                             <span>Dashboard</span>
                         </Item>
                         <Item
                             icon={<ChromeFilled style={{ transform: 'scale(1.7)' }} />}
                             style={{ fontSize: '18px', fontFamily: 'inherit' }}
-                            key="Pokemons">
+                            key="/pokemons">
                             <Link to="/pokemons"></Link>
                             <span>Pokédex</span>
                         </Item>
@@ -47,7 +49,10 @@ const LayoutMain: FunctionComponent = ({ children }) => {
                     </Content>
                 </Layout>
             </Layout>
-            <Footer style={{ textAlign: 'center', height: '200px' }}>Satispay Assignment ©2021 Frontend</Footer>
+            <Footer style={{ textAlign: 'center', height: '200px' }}>
+                <Typography>Satispay Assignment ©2021 Frontend</Typography>
+                <Typography>Luca Cicciotti</Typography>
+            </Footer>
         </Layout>
     )
 }
