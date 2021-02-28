@@ -1,6 +1,10 @@
 # Run Client
 
-You can run the client with the following command `yarn workspace @frontend-assignment/client start` 
+You can run the client with the following commands:
+
+`yarn install`
+
+`yarn workspace @frontend-assignment/client start` 
 
 The client will be running on `localhost:8080`
 
