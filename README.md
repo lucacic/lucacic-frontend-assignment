@@ -1,3 +1,10 @@
+# Cliet side
+
+You can run the client with the following command `yarn workspace @frontend-assignment/client start` 
+
+The client will be running on localhost:8080
+
+
 # Assignment for Frontend Position
 
 In Satispay one of the main task for a frontend developer is to build useful interfaces in order to display, search and interact with data.
