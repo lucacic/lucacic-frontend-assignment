@@ -10,9 +10,9 @@ const hostImage = "https://pokeres.bastionbot.org/images/pokemon";
  */
 const columns = (keySearch: string | null) => {
 
-    const renderNameColumn = (name: string) => <h2 dangerouslySetInnerHTML={creaCodiceHtml(name)} />
+    const renderNameColumn = (name: string) => <h2 dangerouslySetInnerHTML={createCodeHtml(name)} />
 
-    const renderClasifictionColumn = (clasifiction: string) => <h3>{clasifiction}</h3>
+    const renderClassificationColumn = (classification: string) => <h3>{classification}</h3>
 
     const renderTypesColumn = (types: [string]) => (
         <>
@@ -36,7 +36,7 @@ const columns = (keySearch: string | null) => {
         />
     )
 
-    const creaCodiceHtml = (text: string) => (
+    const createCodeHtml = (text: string) => (
         keySearch
             ? { __html: text.replace(new RegExp(keySearch, 'gi'), `<mark style="background: yellow;padding: 0; text-transform: capitalize;">${keySearch}</mark>`) }
             : { __html: text }
@@ -61,7 +61,7 @@ const columns = (keySearch: string | null) => {
                 title: 'Classification',
                 dataIndex: 'classification',
                 key: 'classification',
-                render: renderClasifictionColumn
+                render: renderClassificationColumn
             },
             {
                 title: 'Types',

@@ -62,7 +62,7 @@ const PokemonsContainer = () => {
     ****************************************/
 
     const [pokemonList, setPokemonList] = useState<NodePokemon[]>([]);
-    const [pokemonFiltred, setPokemonFiltred] = useState<NodePokemon[]>([]);
+    const [pokemonFiltered, setPokemonFiltered] = useState<NodePokemon[]>([]);
     const [pokemonToShow, setPokemonsToShow] = useState<NodePokemon[]>([]);
 
     const [searchValue, setSearchValue] = useState<string | null>(null);
@@ -121,9 +121,9 @@ const PokemonsContainer = () => {
     // Handle Result of fetchMore
     useEffect(() => {
         if (moreData) {
-            const newPokemonLinst = getNodes(moreData.data);
-            setPokemonList([...pokemonList, ...newPokemonLinst]);
-            setPokemonsToShow([...pokemonList, ...newPokemonLinst]);
+            const newPokemonList = getNodes(moreData.data);
+            setPokemonList([...pokemonList, ...newPokemonList]);
+            setPokemonsToShow([...pokemonList, ...newPokemonList]);
             moreData.data.pokemons && setEndCursor(moreData.data.pokemons.pageInfo.endCursor);
         }
     }, [moreData])
@@ -145,7 +145,7 @@ const PokemonsContainer = () => {
     useEffect(() => {
         if (resultFilterQuery && filterType !== PokemonType.all) {
             const pokemons = getNodes(resultFilterQuery);
-            setPokemonFiltred(pokemons);
+            setPokemonFiltered(pokemons);
             setPokemonsToShow(pokemons);
             setHasNextPage(resultFilterQuery.pokemonsByType?.pageInfo.hasNextPage || false);
         }
@@ -173,7 +173,7 @@ const PokemonsContainer = () => {
                 setPokemonsToShow(pokemonList);
                 setHasNextPage(true);
             } else {
-                setPokemonsToShow(pokemonFiltred);
+                setPokemonsToShow(pokemonFiltered);
             }
         }
         setSearchValue(event.target.value);

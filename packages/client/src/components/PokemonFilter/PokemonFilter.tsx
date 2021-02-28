@@ -27,9 +27,7 @@ const PokemonFilter: React.FC<PokemonFilterProps> = ({ onSelect }) => {
                 optionFilterProp="children"
             >
                 <Option value='all'>All Pokèmon</Option>
-                <Option value={PokemonType.electric}>{PokemonType.electric}</Option>
                 <Option value={PokemonType.fairy}>{PokemonType.fairy}</Option>
-                <Option value={PokemonType.fighting}>{PokemonType.fighting}</Option>
                 <Option value={PokemonType.fire}>{PokemonType.fire}</Option>
                 <Option value={PokemonType.flying}>{PokemonType.flying}</Option>
                 <Option value={PokemonType.ghost}>{PokemonType.ghost}</Option>
@@ -42,6 +40,8 @@ const PokemonFilter: React.FC<PokemonFilterProps> = ({ onSelect }) => {
                 <Option value={PokemonType.rock}>{PokemonType.rock}</Option>
                 <Option value={PokemonType.steel}>{PokemonType.steel}</Option>
                 <Option value={PokemonType.water}>{PokemonType.water}</Option>
+                <Option value={PokemonType.electric}>{PokemonType.electric}</Option>
+                <Option value={PokemonType.fighting}>{PokemonType.fighting}</Option>
 
             </Select>
         </div>
