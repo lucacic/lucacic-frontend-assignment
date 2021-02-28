@@ -2,11 +2,16 @@
 
 You can run the client with the following commands:
 
+`cd lucacic-frontend-assignment`
+
 `yarn install`
 
 `yarn workspace @frontend-assignment/client start` 
 
 The client will be running on `localhost:8080`
+
+
+If yarn commands fails for any reason, try to run `yarn workspace @frontend-assignment/client serve` 
 
 
 # Assignment for Frontend Position
