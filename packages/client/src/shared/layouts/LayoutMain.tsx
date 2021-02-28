@@ -26,7 +26,7 @@ const LayoutMain: FunctionComponent = ({ children }) => {
             </Header>
             <Layout>
                 <Sider width={200}>
-                    <Menu mode="inline" defaultSelectedKeys={[`${location.pathname}`]} style={{ height: '100%', borderRight: 0 }}>
+                    <Menu mode="inline" defaultSelectedKeys={[`${location.pathname}`]} style={{ height: '100%', borderRight: 0, background: "#fafafa" }}>
                         <Item
                             icon={<MenuUnfoldOutlined style={{ transform: 'scale(1.7)' }} />}
                             style={{ fontSize: '18px', fontFamily: 'inherit' }}
@@ -49,9 +49,9 @@ const LayoutMain: FunctionComponent = ({ children }) => {
                     </Content>
                 </Layout>
             </Layout>
-            <Footer style={{ textAlign: 'center', height: '200px' }}>
-                <Typography>Satispay Assignment ©2021 Frontend</Typography>
-                <Typography>Luca Cicciotti</Typography>
+            <Footer style={{ textAlign: 'center', height: '200px', background: '#444444' }}>
+                <Typography style={{color: 'white',fontSize: "22px"}}>Satispay Assignment ©2021</Typography>
+                <Typography style={{color: 'white'}}>Frontend - Luca Cicciotti</Typography>
             </Footer>
         </Layout>
     )
